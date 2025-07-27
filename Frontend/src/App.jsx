@@ -1,35 +1,64 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import {
+  BrowserRouter,
+  Routes,
+  Route
+} from 'react-router-dom';
+
+import {
+  Welcome,
+  Signup,
+  Login
+} from './pages/index.js';
+
+import AuthenticatedLayout from './layout/Authenticated.jsx';
+import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { login, logout } from './features/userSlice.js';
+import axios from 'axios';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const refreshToken = async () => {
+      try {
+        const res = await axios.post('/api/v1/users/refresh', {}, { withCredentials: true });
+        if (res.status === 200 && res.data?.data) {
+          dispatch(login(res.data.data));
+        } else {
+          dispatch(logout());
+        }
+      } catch (err) {
+        dispatch(logout());
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    refreshToken();
+  }, [dispatch]);
+
+  if (loading) return (
+    <div className="flex justify-center items-center h-screen bg-gradient-to-r from-black via-indigo-950 to-pink-900">
+      <div className="w-12 h-12 border-4 border-white border-dashed rounded-full animate-spin"></div>
+        <p className="ml-4 text-white text-xl">Loading...</p>
+    </div>
+  );
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Welcome />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        {/* <Route element={<AuthenticatedLayout />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Route>
+        <Route path="*" element={<NotFound />} /> */}
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
