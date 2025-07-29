@@ -1,7 +1,7 @@
-import User from '../models/user.model.js';
-import ApiError from '../utils/ApiError.js';
-import ApiResponse from '../utils/ApiResponse.js';
-import AsyncHandler from '../utils/AsyncHandler.js';
+import {User} from '../models/user.model.js';
+import {ApiError} from '../utils/ApiError.js';
+import {ApiResponse} from '../utils/ApiResponse.js';
+import {asyncHandler} from '../utils/AsyncHandler.js';
 import {uploadOnCloudinary, deleteFromCloudinary} from '../utils/cloudinary.js';
 
 const options = {
@@ -9,7 +9,7 @@ const options = {
     secure: false
 };
 
-const registerUser = AsyncHandler(async (req, res) => {
+const registerUser = asyncHandler(async (req, res) => {
     const { name, email, password, location, contact, bio } = req.body;
     if (!name || !email || !password || !location || !contact) {
         throw new ApiError(400, "All fields are required");
@@ -45,7 +45,7 @@ const registerUser = AsyncHandler(async (req, res) => {
     );
 }); 
 
-const loginUser = AsyncHandler(async (req, res) => {
+const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -74,7 +74,7 @@ const loginUser = AsyncHandler(async (req, res) => {
     );
 });
 
-const logoutUser = AsyncHandler(async (req, res) => {
+const logoutUser = asyncHandler(async (req, res) => {
     res
     .clearCookie('refreshToken', options)
     .clearCookie('accessToken', options)
@@ -88,7 +88,7 @@ const logoutUser = AsyncHandler(async (req, res) => {
     );
 });
 
-const updateUserProfile = AsyncHandler(async (req, res) => {
+const updateUserProfile = asyncHandler(async (req, res) => {
     const userId = req.user._id;
     const { name, email, location, contact, bio } = req.body;
 
@@ -117,7 +117,7 @@ const updateUserProfile = AsyncHandler(async (req, res) => {
     );
 });
 
-const deleteUserAccount = AsyncHandler(async (req, res) => {
+const deleteUserAccount = asyncHandler(async (req, res) => {
     const userId = req.user._id;
 
     const user = await User.findByIdAndDelete(userId);
@@ -137,7 +137,7 @@ const deleteUserAccount = AsyncHandler(async (req, res) => {
     );
 });
 
-const refreshUserToken = AsyncHandler(async (req, res) => {
+const refreshUserToken = asyncHandler(async (req, res) => {
     const refreshToken = req.cookies.refreshToken;
 
     if (!refreshToken) {
@@ -168,7 +168,7 @@ const refreshUserToken = AsyncHandler(async (req, res) => {
     );
 });
 
-const updateAvatar = AsyncHandler(async (req, res) => {
+const updateAvatar = asyncHandler(async (req, res) => {
     const userId = req.user._id;
     const file = req.file;
     if (!file) {
@@ -196,7 +196,7 @@ const updateAvatar = AsyncHandler(async (req, res) => {
     );
 });
 
-const deleteAvatar = AsyncHandler(async (req, res) => {
+const deleteAvatar = asyncHandler(async (req, res) => {
     const userId = req.user._id;
     const user = await User.findById(userId);
     if (!user) {
@@ -220,7 +220,7 @@ const deleteAvatar = AsyncHandler(async (req, res) => {
     );
 });
 
-const changePassword = AsyncHandler(async (req, res) => {
+const changePassword = asyncHandler(async (req, res) => {
     const userId = req.user._id;
     const { currentPassword, newPassword } = req.body;
 
@@ -248,7 +248,7 @@ const changePassword = AsyncHandler(async (req, res) => {
     );
 });
 
-const getUserProfile = AsyncHandler(async (req, res) => {
+const getUserProfile = asyncHandler(async (req, res) => {
     const userId = req.user._id;
 
     const user = await User.findById(userId).select('-password -refreshToken'); 
@@ -266,6 +266,25 @@ const getUserProfile = AsyncHandler(async (req, res) => {
     );  
 });
 
+const userProfile = asyncHandler(async (req, res) => {
+    const { userId } = req.params;
+
+    const user = await User.findById(userId).select('-password -refreshToken');
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
+
+    res
+    .status(200)
+    .json(
+        new ApiResponse(
+            200,
+            user,
+            "User profile retrieved successfully"
+        )
+    )
+});
+
 export default {
     registerUser,
     loginUser,
@@ -276,5 +295,6 @@ export default {
     updateAvatar,
     deleteAvatar,
     changePassword,
-    getUserProfile
+    getUserProfile,
+    userProfile
 }

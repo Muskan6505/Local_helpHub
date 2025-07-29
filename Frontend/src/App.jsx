@@ -7,7 +7,15 @@ import {
 import {
   Welcome,
   Signup,
-  Login
+  Login,
+  Profile,
+  RequestFeed,
+  CreateRequest,
+  Request,
+  Dashboard,
+  ChatPage,
+  SOSpage,
+  Notifications
 } from './pages/index.js';
 
 import AuthenticatedLayout from './layout/Authenticated.jsx';

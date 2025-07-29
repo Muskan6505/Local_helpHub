@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Logo from "../components/Logo";
-import { Eye, EyeOff } from "lucide-react"; // If you're using Lucide icons
+import { Eye, EyeOff } from "lucide-react"; 
 
 const Signup = () => {
     const [formData, setFormData] = useState({
