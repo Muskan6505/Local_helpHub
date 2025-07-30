@@ -34,6 +34,9 @@ const UserSchema = new mongoose.Schema(
             type: Number, 
             default: 0 
         }, // For future trust badges
+        refreshToken: {
+            type: String,
+        }
     }, {timestamps: true}
 );
 

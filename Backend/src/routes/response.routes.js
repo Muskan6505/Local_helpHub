@@ -4,8 +4,8 @@ import {
     getMyResponses, 
     getResponseByRequest,
     updateResponseStatus
-} from "../controllers/response.controller"
-import { verifyJWT } from "../middlewares/auth.middleware";
+} from "../controllers/response.controller.js"
+import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 

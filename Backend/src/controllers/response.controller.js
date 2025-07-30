@@ -1,4 +1,4 @@
-import { Response } from "../models/response.model";
+import { Response } from "../models/response.model.js";
 import {ApiError} from '../utils/ApiError.js';
 import {ApiResponse} from '../utils/ApiResponse.js';
 import {asyncHandler} from '../utils/AsyncHandler.js';
@@ -11,7 +11,7 @@ const createResponse = asyncHandler(async(req, res) => {
         const existing = await Response.findOne({ helpRequest, helper });
         if (existing) throw new ApiError(400, 'Already responded');
 
-        const response = new Response({ requestId, message, helper });
+        const response = new Response({ helpRequest, message, helper });
         await response.save();
         res
         .status(201)
@@ -51,7 +51,7 @@ const getResponseByRequest = asyncHandler(async(req, res) => {
 // Get all responses by logged-in user
 const getMyResponses = async (req, res) => {
     try {
-        const responses = await Response.find({ helper: req.user._id }).populate('requestId');
+        const responses = await Response.find({ helper: req.user._id }).populate('helpRequest');
         res
         .status(200)
         .json(
@@ -66,11 +66,11 @@ const getMyResponses = async (req, res) => {
     }
 };
 
-// Accept or decline a helper (optional, by requester)
+
 const updateResponseStatus = async (req, res) => {
     try {
         const { responseId } = req.params;
-        const { status } = req.body; // 'accepted' or 'declined'
+        const  {status} = req.body; 
 
         const response = await Response.findById(responseId).populate('helpRequest');
         if (!response) throw new ApiError(404, 'Response not found' );
@@ -90,7 +90,7 @@ const updateResponseStatus = async (req, res) => {
             )
         );
     } catch (err) {
-        throw new Response(500, `Status update failed  ${err.message }`);
+        throw new ApiError(500, `Status update failed: ${err.message}`);
     }
 };
 

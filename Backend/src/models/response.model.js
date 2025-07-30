@@ -15,8 +15,8 @@ const ResponseSchema = new mongoose.Schema(
     message: String,
     status: { 
       type: String, 
-      enum: ['interested', 'in_progress', 'completed'], 
-      default: 'interested' 
+      enum: ['Pending', 'Accepted', 'Declined'], 
+      default: 'Pending' 
     }
   },
   {

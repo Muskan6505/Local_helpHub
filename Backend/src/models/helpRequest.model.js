@@ -9,7 +9,7 @@ const HelpRequestSchema = new mongoose.Schema(
     description: String,
     category: { 
       type: String, 
-      enum: ['medicines', 'groceries', 'tutoring', 'transport', 'other'] 
+      enum: ['Medical', 'Medicines', 'Groceries', 'Food', 'Transport', 'other'] 
     },
     location: {
       type: { 

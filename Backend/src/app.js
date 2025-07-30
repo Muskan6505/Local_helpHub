@@ -1,7 +1,8 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import {initSocket} from "./utils/Socket.js"
+// import {initSocket} from "./utils/Socket.js"
+
 
 const app = express();
 
@@ -10,12 +11,12 @@ app.use(cors({
     credentials : true
 }))
 
-const server = http.createServer(app);
-initSocket(server);
+// const server = http.createServer(app);
+// initSocket(server);
 
-server.listen(5000, () => {
-    console.log("Server running on port 5000");
-});
+// server.listen(5000, () => {
+//     console.log("Server running on port 5000");
+// });
 
 app.use(express.json({limit: "16kb"}))
 app.use(express.urlencoded({extended: true, limit: "16kb"}))

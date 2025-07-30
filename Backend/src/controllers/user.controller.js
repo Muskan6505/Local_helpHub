@@ -28,10 +28,12 @@ const registerUser = asyncHandler(async (req, res) => {
         contact,
         bio
     });
-
     await user.save();
+
     const accessToken = user.generateAccessToken();
     const refreshToken = user.generateRefreshToken();
+    user.refreshToken = refreshToken;
+    await user.save();
 
     res
     .cookie('refreshToken', refreshToken, options)
@@ -60,6 +62,8 @@ const loginUser = asyncHandler(async (req, res) => {
 
     const accessToken = user.generateAccessToken();
     const refreshToken = user.generateRefreshToken();
+    user.refreshToken = refreshToken;
+    await user.save();
 
     res
     .cookie('refreshToken', refreshToken, options)
@@ -99,7 +103,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     const user = await User.findByIdAndUpdate(
         userId,
         { name, email, location, contact, bio },
-        { new: true, runValidators: true }
+        { new: true }
     );
 
     if (!user) {
@@ -174,10 +178,14 @@ const updateAvatar = asyncHandler(async (req, res) => {
     if (!file) {
         throw new ApiError(400, "Avatar file is required");
     }
-    const result = await uploadOnCloudinary(file.path, 'avatars');
+    const result = await uploadOnCloudinary(file.path);
+    if (!result) {
+        throw new ApiError(500, "Cloudinary upload failed");
+    }
+
     const user = await User.findByIdAndUpdate(
         userId,
-        { avatar: result.secure_url },
+        { avatar: result?.url },
         { new: true, runValidators: true }
     );
 
@@ -285,7 +293,7 @@ const userProfile = asyncHandler(async (req, res) => {
     )
 });
 
-export default {
+export {
     registerUser,
     loginUser,
     logoutUser,

@@ -1,3 +1,3 @@
-const DB_NAME = "Local HelpHub";
+const DB_NAME = "Local_HelpHub";
 
 export {DB_NAME}

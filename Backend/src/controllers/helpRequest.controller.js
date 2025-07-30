@@ -1,7 +1,7 @@
-import { HelpRequest } from "../models/helpRequest.model";
-import {asyncHandler} from "../utils/AsyncHandler";
-import { ApiResponse } from "../utils/ApiResponse";
-import {ApiError} from "../utils/ApiError";
+import { HelpRequest } from "../models/helpRequest.model.js";
+import {asyncHandler} from "../utils/AsyncHandler.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
+import {ApiError} from "../utils/ApiError.js";
 
 const createRequest = asyncHandler(async (req, res) => {
     const { title, description, category, coordinates } = req.body;
@@ -46,7 +46,7 @@ const getAllRequests = asyncHandler(async (req, res) => {
         };
     }
 
-    const requests = await HelpRequest.find(query).populate("requester", "name email");
+    const requests = await HelpRequest.find(query).populate("requester");
 
     res
     .status(200)
@@ -145,7 +145,7 @@ const deleteRequest = asyncHandler(async (req, res) => {
     );
 });
 
-export const getFilteredRequests = asyncHandler(async (req, res) => {
+const getFilteredRequests = asyncHandler(async (req, res) => {
     const {
         status,
         category,
