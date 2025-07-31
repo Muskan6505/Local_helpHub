@@ -1,6 +1,7 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import { ApiError } from "./utils/ApiError.js";
 // import {initSocket} from "./utils/Socket.js"
 
 
@@ -32,13 +33,19 @@ app.use("/api/v1/responses", responseRouter)
 app.use("/api/v1/help-requests", helpRequestRouter)
 
 
-app.use((req, res, next) => {
-    res.status(404).json({ error: "Not Found" });
-});
-
 app.use((err, req, res, next) => {
-    console.error(err);
-    res.status(500).json({ error: "Internal Server Error" });
+    if (err instanceof ApiError) {
+        return res.status(err.statusCode).json({
+            message: err.message,
+            statusCode: err.statusCode
+        });
+    }
+    
+    // For other errors
+    res.status(500).json({
+        message: 'Internal Server Error',
+        statusCode: 500
+    });
 });
 
 export {app};

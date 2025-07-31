@@ -1,8 +1,13 @@
 class ApiError extends Error {
     constructor(statusCode, message) {
         super(message);
+        Object.setPrototypeOf(this, ApiError.prototype);
+        
         this.statusCode = statusCode;
         this.message = message;
+        this.isOperational = true; 
+
+        Error.captureStackTrace(this, this.constructor);
     }
     
     static badRequest(message) {
@@ -23,6 +28,13 @@ class ApiError extends Error {
     
     static internalServerError(message) {
         return new ApiError(500, message || 'Internal Server Error');
+    }
+    
+    toJSON() {
+        return {
+            statusCode: this.statusCode,
+            message: this.message,
+        };
     }
 }
 

@@ -1,7 +1,12 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Logo from "../components/Logo";
-import { Eye, EyeOff } from "lucide-react"; // 👈 eye icons
+import { Eye, EyeOff } from "lucide-react";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { login } from "../features/userSlice";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
     const [formData, setFormData] = useState({
@@ -9,7 +14,9 @@ const Login = () => {
         password: "",
     });
 
-    const [showPassword, setShowPassword] = useState(false); // 👈 toggle state
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -19,9 +26,22 @@ const Login = () => {
         setShowPassword((prev) => !prev);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // TODO: Handle login logic
+        try {
+            const res = await axios.post(
+                "/api/v1/users/login",
+                formData,
+                { withCredentials: true }
+            );
+            const user = res.data.data;
+            toast.success("Login successful!");
+            dispatch(login(user));
+            navigate("/dashboard");
+        } catch (error) {
+            const msg = error.response?.data?.message || "Login failed!";
+            toast.error(msg);
+        }
     };
 
     return (

@@ -9,6 +9,7 @@ import Dashboard from "./Dashboard"
 import ChatPage from "./ChatPage";
 import SOSpage from "./SOSpage"
 import Notifications from "./Notifications"
+import NotFound from "./NotFound";
 
 export {
     Welcome,
@@ -21,5 +22,6 @@ export {
     Dashboard,
     ChatPage,
     SOSpage,
-    Notifications
+    Notifications,
+    NotFound
 }
