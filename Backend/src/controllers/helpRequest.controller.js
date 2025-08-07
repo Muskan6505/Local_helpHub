@@ -3,6 +3,8 @@ import {asyncHandler} from "../utils/AsyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import {ApiError} from "../utils/ApiError.js";
 
+import { generateTagsFromGemini } from "../utils/generateTagsFromGemini.js";
+
 const createRequest = asyncHandler(async (req, res) => {
     const { title, description, category, coordinates, priority } = req.body;
     const requester = req.user._id;
@@ -21,6 +23,7 @@ const createRequest = asyncHandler(async (req, res) => {
         },
         requester,
         priority: priority || 'medium',
+        tags: await generateTagsFromGemini(title, description)
     });
 
     res
@@ -81,44 +84,48 @@ const getRequestById = asyncHandler(async (req, res) => {
     );
 });
 
+const updateRequest =  asyncHandler(async (req, res) => {
+    try {
+        const requestId = req.params.id;
+        const requester = req.user._id;
 
-const updateRequest = asyncHandler(async (req, res) => {
-    const { id } = req.params;
+        const existing = await HelpRequest.findOne({ _id: requestId, requester });
+        if (!existing) {
+        return res.status(404).json({ message: "Help request not found" });
+        }
 
-    const existing = await HelpRequest.findById(id);
+        const allowedUpdates = ['title', 'description', 'category', 'status', 'priority', 'coordinates'];
+        let shouldRegenerateTags = false;
 
-    if (!existing) {
-        throw new ApiError(404, "Help request not found");
-    }
-
-    if (existing.requester.toString() !== req.user._id.toString()) {
-        throw new ApiError(403, "You are not authorized to update this request");
-    }
-
-    const allowedUpdates = ['title', 'description', 'category', 'status', 'coordinates', 'priority'];
-    allowedUpdates.forEach(field => {
+        allowedUpdates.forEach(field => {
         if (req.body[field]) {
-        if (field === 'coordinates') {
-            existing.location.coordinates = req.body.coordinates;
-        } else {
+            if (field === 'coordinates') {
+            existing.location = {
+                type: "Point",
+                coordinates: req.body.coordinates,
+            };
+            } else {
             existing[field] = req.body[field];
-        }
-        }
-    });
+            }
 
-    await existing.save();
+            if (field === 'title' || field === 'description') {
+            shouldRegenerateTags = true;
+            }
+        }
+        });
 
-    res
-    .status(200)
-    .json(
-        new ApiResponse(
-            200, 
-            existing, 
-            "Help request updated successfully"
-        )
-    );
+        if (shouldRegenerateTags) {
+        existing.tags = await generateTagsFromGemini(existing.title, existing.description);
+        }
+
+        await existing.save();
+
+        res.status(200).json({ message: "Help request updated", request: existing });
+    } catch (err) {
+        console.error("Update error:", err);
+        res.status(500).json({ message: "Server error while updating help request" });
+    }
 });
-
 
 const deleteRequest = asyncHandler(async (req, res) => {
     const { id } = req.params;

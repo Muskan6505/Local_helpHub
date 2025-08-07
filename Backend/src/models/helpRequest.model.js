@@ -11,6 +11,10 @@ const HelpRequestSchema = new mongoose.Schema(
       type: String, 
       enum: ['Medical', 'Medicines', 'Groceries', 'Food', 'Transport', 'other'] 
     },
+    tags: {
+      type: [String], 
+      default: [],
+    },
     location: {
       type: { 
         type: String, 

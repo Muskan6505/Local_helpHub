@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import LocationPicker from "../components/LocationPicker";
 
 const EditRequest = () => {
     const { id } = useParams();
@@ -13,44 +14,105 @@ const EditRequest = () => {
         category: "",
         status: "",
         priority: "",
+        lat: "",
+        lng: "",
+        address: "",
     });
 
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchRequest = async () => {
-            try {
-                const res = await axios.get(`/api/v1/help-requests/${id}`, {
-                withCredentials: true,
-                });
-                const { title, description, category, status, priority } = res.data.data;
-                setFormData({ title, description, category, status, priority });
-                setLoading(false);
-            } catch (err) {
-                console.error(err);
-                toast.error("Failed to load request");
-                setLoading(false);
-            }
+        try {
+            const res = await axios.get(`/api/v1/help-requests/${id}`, {
+            withCredentials: true,
+            });
+
+            const {
+            title,
+            description,
+            category,
+            status,
+            priority,
+            location,
+            } = res.data.data;
+
+            const [lng, lat] = location?.coordinates || [];
+
+            setFormData({
+            title,
+            description,
+            category,
+            status,
+            priority,
+            lat,
+            lng,
+            address: "", // Can be updated later via reverse geocode
+            });
+
+            setLoading(false);
+        } catch (err) {
+            console.error(err);
+            toast.error("Failed to load request");
+            setLoading(false);
+        }
         };
 
         fetchRequest();
     }, [id]);
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        setFormData((prev) => ({
+        ...prev,
+        [e.target.name]: e.target.value,
+        }));
+    };
+
+    const setLocation = ({ lat, lng, address }) => {
+        setFormData((prev) => ({
+        ...prev,
+        lat,
+        lng,
+        address,
+        }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        const {
+        title,
+        description,
+        category,
+        status,
+        priority,
+        lat,
+        lng,
+        } = formData;
+
+        if (!lat || !lng || !title || !category || !status || !priority) {
+        return toast.error("Please fill all required fields including location");
+        }
+
+        const payload = {
+        title,
+        description,
+        category,
+        status,
+        priority,
+        coordinates: [lng, lat],
+        };
+
         try {
-            await axios.put(`/api/v1/help-requests/${id}`, formData, {
-                withCredentials: true,
-            });
-            toast.success("Request updated successfully");
-            navigate("/myrequests");
+        await axios.put(`/api/v1/help-requests/${id}`, payload, {
+            withCredentials: true,
+        });
+
+        toast.success("Request updated successfully");
+        navigate("/myrequests");
         } catch (err) {
-            console.error(err);
-            toast.error("Failed to update request");
+        console.error(err);
+        toast.error("Failed to update request");
         }
     };
 
@@ -64,34 +126,34 @@ const EditRequest = () => {
             <div>
                 <label className="block text-sm font-medium">Title</label>
                 <input
-                    type="text"
-                    name="title"
-                    value={formData.title}
-                    onChange={handleChange}
-                    className="w-full border px-3 py-2 rounded-md focus:outline-none focus:border-blue-500"
-                    required
+                type="text"
+                name="title"
+                value={formData.title}
+                onChange={handleChange}
+                className="w-full border px-3 py-2 rounded-md focus:outline-none focus:border-blue-500"
+                required
                 />
             </div>
 
             <div>
                 <label className="block text-sm font-medium">Description</label>
                 <textarea
-                    name="description"
-                    value={formData.description}
-                    onChange={handleChange}
-                    rows="4"
-                    className="w-full border px-3 py-2 rounded-md focus:outline-none focus:border-blue-500"
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                rows="4"
+                className="w-full border px-3 py-2 rounded-md focus:outline-none focus:border-blue-500"
                 />
             </div>
 
             <div>
                 <label className="block text-sm font-medium">Category</label>
                 <select
-                    name="category"
-                    value={formData.category}
-                    onChange={handleChange}
-                    className="w-full border px-3 py-2 rounded-md focus:outline-none focus:border-blue-500"
-                    required
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                className="w-full border px-3 py-2 rounded-md focus:outline-none focus:border-blue-500"
+                required
                 >
                 <option value="">Select</option>
                 <option value="Medical">Medical</option>
@@ -106,11 +168,11 @@ const EditRequest = () => {
             <div>
                 <label className="block text-sm font-medium">Status</label>
                 <select
-                    name="status"
-                    value={formData.status}
-                    onChange={handleChange}
-                    className="w-full border px-3 py-2 rounded-md focus:outline-none focus:border-blue-500"
-                    required
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+                className="w-full border px-3 py-2 rounded-md focus:outline-none focus:border-blue-500"
+                required
                 >
                 <option value="">Select</option>
                 <option value="open">Open</option>
@@ -122,17 +184,27 @@ const EditRequest = () => {
             <div>
                 <label className="block text-sm font-medium">Priority</label>
                 <select
-                    name="priority"
-                    value={formData.priority}
-                    onChange={handleChange}
-                    className="w-full border px-3 py-2 rounded-md focus:outline-none focus:border-blue-500"
-                    required
+                name="priority"
+                value={formData.priority}
+                onChange={handleChange}
+                className="w-full border px-3 py-2 rounded-md focus:outline-none focus:border-blue-500"
+                required
                 >
                 <option value="">Select</option>
                 <option value="low">Low</option>
                 <option value="medium">Medium</option>
                 <option value="high">High</option>
                 </select>
+            </div>
+
+            <div>
+                <label className="block text-sm font-medium">Location</label>
+                <LocationPicker
+                lat={formData.lat}
+                lng={formData.lng}
+                address={formData.address}
+                setLocation={setLocation}
+                />
             </div>
 
             <button

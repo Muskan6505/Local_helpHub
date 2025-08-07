@@ -127,7 +127,7 @@ const RequestCard = ({ request }) => {
 
             {/* Action Button */}
             {!isOwnRequest && (
-                <Link className="flex items-center justify-center gap-2 border mt-2 py-2 rounded-xl text-sm text-gray-800 hover:bg-gray-50 transition">
+                <Link to={`/requests/${request._id}`} className="flex items-center justify-center gap-2 border mt-2 py-2 rounded-xl text-sm text-gray-800 hover:bg-gray-50 transition">
                     <User size={16} />
                     I Can Help
                 </Link>
