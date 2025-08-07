@@ -9,8 +9,18 @@ import {
     CheckCircle,
     MapPin
 } from 'lucide-react';
+import { useSelector } from "react-redux";
+import { Navigate } from "react-router-dom";
+
+
 
 function Welcome() {
+    const { isLoggedIn } = useSelector((state) => state.user);
+    
+    if (isLoggedIn) {
+        return <Navigate to="/dashboard" replace />;
+    }
+    
     const features = [
         {
             title: "Ask for Help",

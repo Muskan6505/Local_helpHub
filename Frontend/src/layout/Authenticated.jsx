@@ -2,6 +2,7 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import { Navigate } from "react-router-dom";
+import NavbarHome from "../components/NavbarHome";
 
 const AuthenticatedLayout = () => {
     const user = useSelector((state) => state.user)
@@ -10,6 +11,7 @@ const AuthenticatedLayout = () => {
     return (
         isAuthenticated?
         <>
+            <NavbarHome />
             <Outlet />
         </>
         :

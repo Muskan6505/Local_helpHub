@@ -16,7 +16,9 @@ import {
   ChatPage,
   SOSpage,
   Notifications,
-  NotFound
+  NotFound,
+  MyRequest,
+  EditRequest
 } from './pages/index.js';
 
 import AuthenticatedLayout from './layout/Authenticated.jsx';
@@ -75,8 +77,10 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/requests" element={<RequestFeed />} />
+          <Route path="/myrequests" element={<MyRequest />} />
           <Route path="/requests/create" element={<CreateRequest />} />
           <Route path="/requests/:id" element={<Request />} />
+          <Route path="/edit-request/:id" element={<EditRequest />} />
           <Route path="/chat" element={<ChatPage />} />
           <Route path="/sos" element={<SOSpage />} />
           <Route path="/notifications" element={<Notifications />} />

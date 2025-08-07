@@ -10,6 +10,8 @@ import ChatPage from "./ChatPage";
 import SOSpage from "./SOSpage"
 import Notifications from "./Notifications"
 import NotFound from "./NotFound";
+import MyRequest from "./MyRequest";
+import EditRequest from "./EditRequest";
 
 export {
     Welcome,
@@ -23,5 +25,7 @@ export {
     ChatPage,
     SOSpage,
     Notifications,
-    NotFound
+    NotFound, 
+    MyRequest,
+    EditRequest
 }

@@ -7,6 +7,10 @@ import { useDispatch } from "react-redux";
 import { login } from "../features/userSlice";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useSelector } from "react-redux";
+import { Navigate } from "react-router-dom";
+
+
 
 const Login = () => {
     const [formData, setFormData] = useState({
@@ -43,6 +47,12 @@ const Login = () => {
             toast.error(msg);
         }
     };
+
+    const { isLoggedIn } = useSelector((state) => state.user);
+
+    if (isLoggedIn) {
+        return <Navigate to="/dashboard" replace />;
+    }
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-l via-[#f0f6ff] from-sky-200 to-white px-4 py-12">

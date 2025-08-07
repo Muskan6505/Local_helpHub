@@ -4,7 +4,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import {ApiError} from "../utils/ApiError.js";
 
 const createRequest = asyncHandler(async (req, res) => {
-    const { title, description, category, coordinates } = req.body;
+    const { title, description, category, coordinates, priority } = req.body;
     const requester = req.user._id;
 
     if (!title || !coordinates || !Array.isArray(coordinates) || coordinates.length !== 2) {
@@ -20,6 +20,7 @@ const createRequest = asyncHandler(async (req, res) => {
         coordinates: coordinates,
         },
         requester,
+        priority: priority || 'medium',
     });
 
     res
@@ -94,7 +95,7 @@ const updateRequest = asyncHandler(async (req, res) => {
         throw new ApiError(403, "You are not authorized to update this request");
     }
 
-    const allowedUpdates = ['title', 'description', 'category', 'status', 'coordinates'];
+    const allowedUpdates = ['title', 'description', 'category', 'status', 'coordinates', 'priority'];
     allowedUpdates.forEach(field => {
         if (req.body[field]) {
         if (field === 'coordinates') {
@@ -156,6 +157,7 @@ const getFilteredRequests = asyncHandler(async (req, res) => {
         radius,
         tags,
         keyword,
+        priority
     } = req.query;
 
     const filter = {};
@@ -202,6 +204,10 @@ const getFilteredRequests = asyncHandler(async (req, res) => {
             $centerSphere: [[parseFloat(lng), parseFloat(lat)], parseFloat(radius) / 6378.1], // radius in km
         },
         };
+    }
+
+    if( priority ) {
+        filter.priority = priority;
     }
 
     const requests = await HelpRequest.find(filter).populate("requester");

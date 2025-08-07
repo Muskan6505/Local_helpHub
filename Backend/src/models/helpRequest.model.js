@@ -31,6 +31,11 @@ const HelpRequestSchema = new mongoose.Schema(
       enum: ['open', 'in_progress', 'fulfilled'], 
       default: 'open' 
     },
+    priority: { 
+      type: String, 
+      enum: ['low', 'medium', 'high'], 
+      default: 'medium' 
+    }
   }, 
   {
     timestamps: true

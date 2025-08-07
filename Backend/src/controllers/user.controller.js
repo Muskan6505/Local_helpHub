@@ -94,15 +94,15 @@ const logoutUser = asyncHandler(async (req, res) => {
 
 const updateUserProfile = asyncHandler(async (req, res) => {
     const userId = req.user._id;
-    const { name, email, location, contact, bio } = req.body;
+    const { name, contact, bio } = req.body;
 
-    if (!name || !email || !location || !contact) {
+    if (!name || !contact) {
         throw new ApiError(400, "All fields are required");
     }
 
     const user = await User.findByIdAndUpdate(
         userId,
-        { name, email, location, contact, bio },
+        { name, contact, bio },
         { new: true }
     );
 
