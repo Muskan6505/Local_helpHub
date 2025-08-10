@@ -104,10 +104,37 @@ const updateResponseStatus = async (req, res) => {
     }
 };
 
+const checkIfResponseExists = async (req, res) => {
+    try {
+        const { helpRequestId } = req.params; 
+
+        if (!helpRequestId) {
+            throw new ApiError(400, "Help request ID is required.");
+        }
+
+        // Check if a response exists for this helper and help request
+        const existingResponse = await Response.findOne({
+            helpRequest: helpRequestId,
+            helper: req.user._id
+        });
+
+        return res.status(200).json(
+            new ApiResponse(
+                200,
+                { exists: !!existingResponse },
+                existingResponse ? "Response already exists." : "No response found."
+            )
+        );
+    } catch (err) {
+        throw new ApiError(500, `Error checking response existence: ${err.message}`);
+    }
+};
+
 
 export {
     createResponse,
     getMyResponses, 
     getResponseByRequest,
-    updateResponseStatus
+    updateResponseStatus,
+    checkIfResponseExists
 }

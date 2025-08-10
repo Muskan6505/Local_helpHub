@@ -133,12 +133,12 @@ const Dashboard = () => {
                             key={res._id}
                             className="p-4 bg-white rounded-lg border shadow-sm hover:shadow-md"
                             >
-                            <p className="font-medium">
+                            <Link to={`/requests/${res.helpRequest._id}`} className="font-medium">
                                 Response to:{" "}
                                 <span className="text-blue-600 font-semibold">
                                 {res.helpRequest?.title || "Untitled Request"}
                                 </span>
-                            </p>
+                            </Link>
                             <p className="text-sm text-gray-600 mt-1">{res.message}</p>
                             <span
                                 className={`mt-2 inline-block px-3 py-1 text-xs rounded-full ${
