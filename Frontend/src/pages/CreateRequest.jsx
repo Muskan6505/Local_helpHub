@@ -45,67 +45,69 @@ const CreateRequest = () => {
   };
 
   return (
-    <div className="max-w-xl mx-auto mt-10 bg-white p-6 rounded-xl shadow-lg">
-      <h2 className="text-2xl font-semibold mb-4 text-center">Create Help Request</h2>
-      <form className="space-y-4" onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="title"
-          required
-          onChange={handleChange}
-          placeholder="Title"
-          className="w-full border px-4 py-2 rounded"
-        />
+    <div className="bg-gradient-to-r from-white via-sky-50 to-sky-100 pt-10">
+      <div className="max-w-xl mx-auto bg-white p-6 rounded-xl shadow-lg">
+        <h2 className="text-2xl font-semibold mb-4 text-center">Create Help Request</h2>
+        <form className="space-y-4" onSubmit={handleSubmit}>
+          <input
+            type="text"
+            name="title"
+            required
+            onChange={handleChange}
+            placeholder="Title"
+            className="w-full border px-4 py-2 rounded"
+          />
 
-        <textarea
-          name="description"
-          onChange={handleChange}
-          placeholder="Description"
-          className="w-full border px-4 py-2 rounded resize-none"
-          rows={3}
-        />
+          <textarea
+            name="description"
+            onChange={handleChange}
+            placeholder="Description"
+            className="w-full border px-4 py-2 rounded resize-none"
+            rows={3}
+          />
 
-        <select
-          name="category"
-          onChange={handleChange}
-          value={formData.category}
-          className="w-full border px-4 py-2 rounded bg-white"
-          required
-        >
-          <option value="" disabled>Select Category</option>
-          <option value="Medical">🩺 Medical</option>
-          <option value="Medicines">💊 Medicines</option>
-          <option value="Groceries">🛒 Groceries</option>
-          <option value="Food">🍽️ Food</option>
-          <option value="Transport">🚗 Transport</option>
-          <option value="Other">🔧 Other</option>
-        </select>
+          <select
+            name="category"
+            onChange={handleChange}
+            value={formData.category}
+            className="w-full border px-4 py-2 rounded bg-white"
+            required
+          >
+            <option value="" disabled>Select Category</option>
+            <option value="Medical">🩺 Medical</option>
+            <option value="Medicines">💊 Medicines</option>
+            <option value="Groceries">🛒 Groceries</option>
+            <option value="Food">🍽️ Food</option>
+            <option value="Transport">🚗 Transport</option>
+            <option value="Other">🔧 other</option>
+          </select>
 
-        <select
-          name="priority"
-          onChange={handleChange}
-          value={formData.priority}
-          className="w-full border px-4 py-2 rounded bg-white"
-        >
-          <option value="low">🟢 Low</option>
-          <option value="medium">🟡 Medium</option>
-          <option value="high">🔴 High</option>
-        </select>
+          <select
+            name="priority"
+            onChange={handleChange}
+            value={formData.priority}
+            className="w-full border px-4 py-2 rounded bg-white"
+          >
+            <option value="low">🟢 Low</option>
+            <option value="medium">🟡 Medium</option>
+            <option value="high">🔴 High</option>
+          </select>
 
-        <LocationPicker
-          lat={formData.lat}
-          lng={formData.lng}
-          address={formData.address}
-          setLocation={setLocation}
-        />
+          <LocationPicker
+            lat={formData.lat}
+            lng={formData.lng}
+            address={formData.address}
+            setLocation={setLocation}
+          />
 
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
-        >
-          Submit Request
-        </button>
-      </form>
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition cursor-pointer"
+          >
+            Submit Request
+          </button>
+        </form>
+      </div>
     </div>
   );
 };

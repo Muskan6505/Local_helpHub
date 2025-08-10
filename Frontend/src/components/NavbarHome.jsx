@@ -114,14 +114,14 @@ const NavbarHome = () => {
                             <div className="absolute right-0 top-full mt-2 w-40 bg-white border shadow-lg rounded-md text-sm z-50">
                                 <Link
                                     to="/profile"
-                                    className="block px-4 py-2 hover:bg-gray-100 text-gray-800"
+                                    className="block px-4 py-2 hover:bg-gray-100 text-gray-800 hover:rounded-md"
                                     onClick={() => setDropdownOpen(false)}
                                 >
                                     Profile
                                 </Link>
                                 <button
                                     onClick={handleLogout}
-                                    className="block px-4 py-2 hover:bg-gray-100 text-gray-800 w-full text-left"
+                                    className="block px-4 py-2 hover:bg-gray-100 text-gray-800 w-full text-left hover:rounded-md"
                                 >
                                     Logout
                                 </button>

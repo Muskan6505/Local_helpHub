@@ -65,7 +65,7 @@ function App() {
   return (
     <BrowserRouter>
       {/* ✅ Toastify container */}
-      <ToastContainer position="top-right" autoClose={2000} hideProgressBar={false} newestOnTop={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
+      <ToastContainer position="top-right" autoClose={1000} hideProgressBar={false} newestOnTop={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<Welcome />} />
