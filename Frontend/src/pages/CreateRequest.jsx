@@ -45,7 +45,7 @@ const CreateRequest = () => {
   };
 
   return (
-    <div className="bg-gradient-to-r from-white via-sky-50 to-sky-100 pt-10">
+    <div className="bg-gradient-to-r from-white via-sky-50 to-sky-100 py-10">
       <div className="max-w-xl mx-auto bg-white p-6 rounded-xl shadow-lg">
         <h2 className="text-2xl font-semibold mb-4 text-center">Create Help Request</h2>
         <form className="space-y-4" onSubmit={handleSubmit}>

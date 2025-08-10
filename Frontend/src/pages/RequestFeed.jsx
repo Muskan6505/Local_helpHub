@@ -79,7 +79,7 @@ const RequestFeed = () => {
     };
 
     return (
-        <div className="p-6">
+        <div className="p-6 bg-gradient-to-r from-white to-sky-50">
             <div className="border-1 border-black rounded-2xl p-2 mb-3">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
                     <div className="flex gap-2 w-full md:w-2/3">
@@ -108,7 +108,7 @@ const RequestFeed = () => {
                 </div>
 
                 {filtersOpen && (
-                    <div className="grid md:grid-cols-3 gap-4 bg-sky-50 p-4 rounded-xl mb-6">
+                    <div className="grid md:grid-cols-3 gap-4 bg-gray-100 p-4 rounded-xl mb-6">
                         {/* Category Dropdown */}
                         <select
                             className="border px-3 py-2 rounded-md"

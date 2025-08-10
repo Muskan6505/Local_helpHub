@@ -17,7 +17,7 @@ const RequestCard = ({ request }) => {
     } = request;
 
     const { user } = useSelector((state) => state.user);
-    console.log("Current User:", user);
+    
     const isOwnRequest = user?._id === requester?._id;
 
     const getStatusColor = () => {

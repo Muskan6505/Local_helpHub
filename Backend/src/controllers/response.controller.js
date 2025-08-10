@@ -2,6 +2,7 @@ import { Response } from "../models/response.model.js";
 import {ApiError} from '../utils/ApiError.js';
 import {ApiResponse} from '../utils/ApiResponse.js';
 import {asyncHandler} from '../utils/AsyncHandler.js';
+import { User } from "../models/user.model.js";
 
 const createResponse = asyncHandler(async(req, res) => {
     try {
@@ -51,7 +52,16 @@ const getResponseByRequest = asyncHandler(async(req, res) => {
 // Get all responses by logged-in user
 const getMyResponses = async (req, res) => {
     try {
-        const responses = await Response.find({ helper: req.user._id }).populate('helpRequest');
+        const responses = await Response.find({ helper: req.user._id })
+        .populate({
+            path: 'helpRequest',
+            populate: {
+                path: 'requester', 
+                model: 'User'      
+            }
+        });
+
+
         res
         .status(200)
         .json(
