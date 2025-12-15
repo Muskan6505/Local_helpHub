@@ -23,7 +23,20 @@ const Dashboard = () => {
             const responsesRes = await axios.get(`/api/v1/responses`);
 
             const now = new Date();
-            const filtered = requestsRes.data.data.filter((req) => {
+            
+            const Responses = responsesRes.data?.data;
+
+            const filteredResp = Responses.filter((res) => {
+                const resDate = new Date(res.createdAt);
+                const diffHours = (now - resDate) / (1000 * 60 * 60);
+                return diffHours <= 240;
+            });
+
+            const sortedResponses = filteredResp.sort(
+                (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+            );
+
+            const filtered =requestsRes.data.data.filter((req) => {
             if (req.requester?._id === user._id) return false;
 
             const requestDate = new Date(req.createdAt);
@@ -31,10 +44,20 @@ const Dashboard = () => {
             return diffHours <= 24;
             });
 
-            console.log("Response data:", responsesRes.data.data);
+            // console.log("Filtered Requests:", filtered);
+            console.log("Sorted Responses:", sortedResponses);
+            
+            const requests = filtered.filter((req) => {
+                const hasResponded = sortedResponses.some((res) =>
 
-            setRecentRequests(filtered);
-            setMyResponses(responsesRes.data?.data || []);
+                    res?.helpRequest?._id?.toString() === req?._id.toString() &&
+                    res?.helper?.toString() === user?._id.toString()
+                );
+                return !hasResponded;
+            });
+
+            setRecentRequests(requests);
+            setMyResponses(sortedResponses);
         } catch (err) {
             console.error("Failed to fetch dashboard data:", err);
         } finally {
@@ -126,26 +149,50 @@ const Dashboard = () => {
                     <h2 className="text-xl font-semibold mb-3">My Responses</h2>
                     {myResponses.length > 0 ? (
                     <ul className="space-y-3">
-                        {myResponses.map((res) => {
+                        {myResponses
+                        .filter(
+                            (res) =>
+                            res &&
+                            res._id &&
+                            res.helpRequest &&
+                            res.helpRequest._id
+                        )
+                        .map((res) => {
+
                         const isAccepted = res.status === "Accepted";
                         return (
                             <li
-                            key={res._id}
+                            key={res?._id}
                             className="p-4 bg-white rounded-lg border shadow-sm hover:shadow-md"
                             >
-                            <Link to={`/requests/${res.helpRequest._id}`} className="font-medium">
+                            {isAccepted ? (
+                            <Link
+                                to={`/requests/${res.helpRequest._id}`}
+                                className="font-medium text-blue-600 hover:underline"
+                            >
                                 Response to:{" "}
-                                <span className="text-blue-600 font-semibold">
+                                <span className="font-semibold">
                                 {res.helpRequest?.title || "Untitled Request"}
                                 </span>
                             </Link>
+                            ) : (
+                            <p className="font-medium text-gray-500 cursor-not-allowed">
+                                Response to:{" "}
+                                <span className="font-semibold">
+                                {res.helpRequest?.title || "Untitled Request"}
+                                </span>
+                            </p>
+                            )}
+
                             <p className="text-sm text-gray-600 mt-1">{res.message}</p>
                             <span
                                 className={`mt-2 inline-block px-3 py-1 text-xs rounded-full ${
                                 isAccepted
                                     ? "bg-green-100 text-green-800"
-                                    : res.status === "Rejected"
+                                    : res.status === "Declined"
                                     ? "bg-red-100 text-red-800"
+                                    : res.status === "Interested"
+                                    ? "bg-blue-100 text-blue-800"
                                     : "bg-yellow-100 text-yellow-800"
                                 }`}
                             >
@@ -169,7 +216,7 @@ const Dashboard = () => {
                                 )}
 
                                 <Link
-                                to={`/chat`}
+                                to={`/chat/${res.helpRequest.requester._id}/${res.helpRequest._id}`}
                                     className="mt-2 flex items-center gap-1 text-blue-600 hover:underline"
                                     onClick={() =>
                                     console.log("Open message UI for", res.helpRequest.requester._id)
@@ -186,7 +233,7 @@ const Dashboard = () => {
                     </ul>
                     ) : (
                     <p className="text-gray-500">
-                        You haven’t responded to any requests yet.
+                        You haven’t responded to any requests in the past 10 days.
                     </p>
                     )}
                 </div>

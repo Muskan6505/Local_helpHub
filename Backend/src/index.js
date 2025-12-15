@@ -1,6 +1,15 @@
 import { app } from "./app.js";
 import connectDB from "./db/index.js";
 import dotenv from "dotenv";
+import http from "http";
+import { initSocket } from "./utils/Socket.js";
+
+const server = http.createServer(app);
+initSocket(server);
+
+server.listen(5000, () => {
+    console.log("Server running");
+});
 
 
 dotenv.config({

@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import LocationPicker from "../components/LocationPicker";
+import { useNavigate } from "react-router-dom";
 
 const CreateRequest = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -40,8 +42,11 @@ const CreateRequest = () => {
       );
       toast.success("Help request created");
     } catch (err) {
+      console.error(err);
       toast.error(err.response?.data?.message || "Failed to create request");
     }
+
+    navigate("/myrequests");
   };
 
   return (
@@ -79,7 +84,7 @@ const CreateRequest = () => {
             <option value="Groceries">🛒 Groceries</option>
             <option value="Food">🍽️ Food</option>
             <option value="Transport">🚗 Transport</option>
-            <option value="Other">🔧 other</option>
+            <option value="other">🔧 Other</option>
           </select>
 
           <select

@@ -2,7 +2,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { ApiError } from "./utils/ApiError.js";
-// import {initSocket} from "./utils/Socket.js"
+import messageRoutes from "./routes/message.routes.js";
 
 
 const app = express();
@@ -11,13 +11,6 @@ app.use(cors({
     origin: process.env.CORS_ORIGIN,
     credentials : true
 }))
-
-// const server = http.createServer(app);
-// initSocket(server);
-
-// server.listen(5000, () => {
-//     console.log("Server running on port 5000");
-// });
 
 app.use(express.json({limit: "16kb"}))
 app.use(express.urlencoded({extended: true, limit: "16kb"}))
@@ -31,6 +24,7 @@ import helpRequestRouter from "./routes/helpRequest.routes.js"
 app.use("/api/v1/users", userRouter)
 app.use("/api/v1/responses", responseRouter)
 app.use("/api/v1/help-requests", helpRequestRouter)
+app.use("/api/v1/messages", messageRoutes);
 
 
 app.use((err, req, res, next) => {

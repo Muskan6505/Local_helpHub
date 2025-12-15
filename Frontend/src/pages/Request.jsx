@@ -6,6 +6,7 @@ import haversine from "haversine-distance";
 import { toast } from "react-toastify";
 import { useGoogleMaps } from "../GoogleMapsProvider";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const mapContainerStyle = {
     width: "100%",
@@ -23,6 +24,7 @@ const Request = () => {
     const [message, setMessage] = useState("");
     const [alreadyResponded, setAlreadyResponded] = useState(false);
     const [directions, setDirections] = useState(null);
+    const navigate = useNavigate();
 
     // Get user's current location
     useEffect(() => {
@@ -92,6 +94,7 @@ const Request = () => {
             toast.success("Response sent!");
             setMessage("");
             setAlreadyResponded(true);
+            navigate("/dashboard");
         } catch (err) {
             console.error(err);
             toast.error(err.response?.data?.message || "Failed to send help");
@@ -99,7 +102,7 @@ const Request = () => {
     };
 
     const handleMessage = () => {
-        window.location.href = `/chat`;
+        window.location.href = `/chat/${request.requester._id}/${request._id}`;
     };
 
     const handleGetDirections = () => {
@@ -131,10 +134,10 @@ const Request = () => {
     if (!request || !isLoaded) return <div>Loading...</div>;
 
     const requestCoords = request.location?.coordinates
-        ? {
-              lat: request.location.coordinates[1],
-              lng: request.location.coordinates[0],
-          }
+        ?   {
+                lat: request.location.coordinates[1],
+                lng: request.location.coordinates[0],
+            }
         : null;
 
     return (
@@ -166,18 +169,23 @@ const Request = () => {
                 </div>
             )}
 
+            {alreadyResponded && (
             <div className="rounded overflow-hidden">
                 {requestCoords && (
-                    <GoogleMap
-                        mapContainerStyle={mapContainerStyle}
-                        center={requestCoords}
-                        zoom={14}
-                    >
-                        <Marker position={requestCoords} />
-                        {directions && <DirectionsRenderer directions={directions} />}
-                    </GoogleMap>
+                <GoogleMap
+                    mapContainerStyle={mapContainerStyle}
+                    center={requestCoords}
+                    zoom={14}
+                >
+                    <Marker position={requestCoords} />
+                    {directions && (
+                    <DirectionsRenderer directions={directions} />
+                    )}
+                </GoogleMap>
                 )}
             </div>
+            )}
+
 
             <button
                 onClick={handleGetDirections}
@@ -206,12 +214,15 @@ const Request = () => {
                             I Can Help
                         </button>
                     )}
-                    <button
+
+                    {alreadyResponded && (
+                        <button
                         onClick={handleMessage}
                         className="border border-gray-500 text-gray-800 hover:bg-gray-200 font-semibold py-2 px-4 rounded bg-sky-100"
                     >
                         Message the User
                     </button>
+                    )}
                 </div>
             </div>
         </div>

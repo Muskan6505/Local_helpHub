@@ -81,7 +81,7 @@ function App() {
           <Route path="/requests/create" element={<CreateRequest />} />
           <Route path="/requests/:id" element={<Request />} />
           <Route path="/edit-request/:id" element={<EditRequest />} />
-          <Route path="/chat" element={<ChatPage />} />
+          <Route path="/chat/:receiverId/:requestId" element={<ChatPage />} />
           <Route path="/sos" element={<SOSpage />} />
           <Route path="/notifications" element={<Notifications />} />
         </Route>

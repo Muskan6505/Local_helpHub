@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Loader2, Trash2, X, CheckCircle, XCircle, Eye } from "lucide-react";
 import { useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
+import { MessageCircle } from "lucide-react";
 
 const MyRequest = () => {
     const [myRequests, setMyRequests] = useState([]);
@@ -66,7 +67,8 @@ const MyRequest = () => {
 
             const filtered = response.data.data.filter(
             (request) => request.requester._id === user._id
-            );
+            ).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+
             setMyRequests(filtered);
         } catch (error) {
             console.error("Failed to fetch requests:", error);
@@ -143,8 +145,14 @@ const MyRequest = () => {
         )}
 
         {showResponses && (
-            <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-            <div className="bg-white rounded-xl shadow-lg w-full max-w-2xl p-6 relative">
+            <div
+                className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+                onClick={() => setShowResponses(false)}
+            >
+            <div
+                className="bg-white rounded-xl shadow-lg w-full max-w-2xl p-6 relative"
+                onClick={(e) => e.stopPropagation()}
+            >
                 {/* Header */}
                 <div className="flex justify-between items-center border-b pb-3">
                 <h2 className="text-xl font-semibold">Responses</h2>
@@ -217,6 +225,17 @@ const MyRequest = () => {
                                 <XCircle size={16} /> Reject
                                 </button>
                             </>
+                            )}
+
+                            {resp.status === "Accepted" && (
+                                <button
+                                onClick={() =>
+                                    navigate(`/chat/${resp.helper._id}/${selectedRequest}`)
+                                }
+                                className="flex items-center gap-1 px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                                >
+                                <MessageCircle size={16} /> Message
+                                </button>
                             )}
 
                             <button
