@@ -7,7 +7,7 @@ import { initSocket } from "./utils/Socket.js";
 const server = http.createServer(app);
 initSocket(server);
 
-server.listen(5000, () => {
+server.listen(process.env.CHATPORT || 5000, () => {
     console.log("Server running");
 });
 
