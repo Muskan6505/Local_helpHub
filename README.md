@@ -351,17 +351,6 @@ npm run build
 
 Then run the backend and manually verify registration, login, refresh after reload, request creation, nearby filtering, response acceptance, avatar upload, and request chat. Backend behavior depends on live MongoDB and third-party services, so a successful frontend build does not validate those integrations.
 
-## Known limitations
-
-- No automated tests are currently included.
-- Notifications and SOS are routed but not implemented as complete features.
-- Production API and Socket.IO URLs are not environment-configurable in the frontend.
-- Socket.IO is not included in the Vercel handler.
-- The Netlify API redirect still targets localhost.
-- The backend deployment config filename is `vecrcel.json`, rather than the conventional `vercel.json`.
-- Some frontend flows contain known inconsistencies: logout in the profile page references missing menu state and uses a relative API path; request creation can navigate after a failed submission; response UI checks `Rejected`/`Interested` values that do not match the backend's `Declined`/`Accepted` schema; and the dashboard's displayed time window differs from its query window.
-- Google Maps setup is duplicated across some frontend components and requires a valid browser key.
-
 ## Troubleshooting
 
 ### API requests fail from the frontend
