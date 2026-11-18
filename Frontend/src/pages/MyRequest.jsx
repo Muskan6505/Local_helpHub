@@ -194,7 +194,7 @@ const MyRequest = () => {
                             className={`px-2 py-1 text-xs rounded-full ${
                                 resp.status === "Accepted"
                                 ? "bg-green-100 text-green-600"
-                                : resp.status === "Rejected"
+                                : resp.status === "Declined" || resp.status === "Rejected"
                                 ? "bg-red-100 text-red-600"
                                 : "bg-yellow-100 text-yellow-600"
                             }`}

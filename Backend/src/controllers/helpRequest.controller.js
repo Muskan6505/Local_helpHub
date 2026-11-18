@@ -1,4 +1,4 @@
-import { HelpRequest } from "../models/helpRequest.model.js";
+﻿import { HelpRequest } from "../models/helpRequest.model.js";
 import {asyncHandler} from "../utils/AsyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import {ApiError} from "../utils/ApiError.js";
@@ -169,17 +169,17 @@ const getFilteredRequests = asyncHandler(async (req, res) => {
 
     const filter = {};
 
-    // ✅ Status filter
+    // âœ… Status filter
     if (status) {
         filter.status = status;
     }
 
-    // ✅ Category filter
+    // âœ… Category filter
     if (category) {
         filter.category = category;
     }
 
-    // ✅ Date range filter
+    // âœ… Date range filter
     if (startDate || endDate) {
         filter.createdAt = {};
         if (startDate) {
@@ -190,13 +190,13 @@ const getFilteredRequests = asyncHandler(async (req, res) => {
         }
     }
 
-    // ✅ Tags filter (assumes array of strings and your model has a 'tags' field)
+    // âœ… Tags filter (assumes array of strings and your model has a 'tags' field)
     if (tags) {
         const tagsArray = tags.split(',');
         filter.tags = { $in: tagsArray };
     }
 
-    // ✅ Keyword search (title/description)
+    // âœ… Keyword search (title/description)
     if (keyword) {
         filter.$or = [
         { title: { $regex: keyword, $options: "i" } },
@@ -204,7 +204,7 @@ const getFilteredRequests = asyncHandler(async (req, res) => {
         ];
     }
 
-    // ✅ Location filter (geospatial query)
+    // âœ… Location filter (geospatial query)
     if (lng && lat && radius) {
         filter.location = {
         $geoWithin: {

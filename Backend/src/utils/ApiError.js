@@ -1,4 +1,4 @@
-class ApiError extends Error {
+﻿class ApiError extends Error {
     constructor(statusCode, message) {
         super(message);
         Object.setPrototypeOf(this, ApiError.prototype);

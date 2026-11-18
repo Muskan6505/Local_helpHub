@@ -25,10 +25,22 @@ const RequestFeed = () => {
 
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(
-            (position) => {
+            async (position) => {
                 const { latitude, longitude } = position.coords;
                 setLocation({ lat: latitude, lng: longitude });
-                fetchRequests({ lat: latitude, lng: longitude, radius: 5 });
+                try {
+                    setLoading(true);
+                    const res = await axios.get("/api/v1/help-requests/filter/query", {
+                        params: { lat: latitude, lng: longitude, radius: 5 },
+                        withCredentials: true,
+                    });
+                    setRequests(res.data.data.filter(req => req.requester._id !== userId));
+                } catch (err) {
+                    console.error(err);
+                    toast.error("Failed to fetch help requests");
+                } finally {
+                    setLoading(false);
+                }
             },
             (error) => {
                 console.error(error);
@@ -36,7 +48,7 @@ const RequestFeed = () => {
                 setLoading(false);
             }
         );
-    }, []);
+    }, [userId]);
 
     const fetchRequests = async (customFilters = {}) => {
         try {

@@ -55,7 +55,7 @@ const Profile = () => {
             const { data } = await axios.patch("/api/v1/users/avatar/update", formData, { withCredentials: true });
             toast.success("Avatar updated!");
             dispatch(setUser(data.data));
-        } catch (err) {
+        } catch {
             toast.error("Avatar upload failed");
         }
     };
@@ -65,7 +65,7 @@ const Profile = () => {
             const { data } = await axios.delete("/api/v1/users/avatar", { withCredentials: true });
             toast.success("Avatar removed!");
             dispatch(setUser(data.data));
-        } catch (err) {
+        } catch {
             toast.error("Failed to remove avatar");
         }
     };
@@ -75,7 +75,7 @@ const Profile = () => {
             await axios.patch("/api/v1/users/password/change", passwordData, { withCredentials: true });
             toast.success("Password changed!");
             setPasswordData({ currentPassword: "", newPassword: "" });
-        } catch (err) {
+        } catch {
             toast.error("Password change failed");
         }
     };
@@ -87,23 +87,21 @@ const Profile = () => {
             toast.success("Account deleted");
             dispatch(logout());
             navigate("/");
-        } catch (err) {
+        } catch {
             toast.error("Failed to delete account");
         }
     };
 
     const handleLogout = async () => {
         try {
-            const res = await axios.post("api/v1/users/logout", {}, { withCredentials: true });
-            if (res.data.success) {
+            const res = await axios.post("/api/v1/users/logout", {}, { withCredentials: true });
+            if (res.data?.success) {
                 toast.success(res.data.message);
             }
             dispatch(logout());
-            setDropdownOpen(false);
-            setMobileMenuOpen(false);
             navigate("/", { replace: true });
         } catch (err) {
-            toast.error("Logging out failed" || err?.response?.data?.message);
+            toast.error(err?.response?.data?.message || "Logging out failed");
         }
     };
 

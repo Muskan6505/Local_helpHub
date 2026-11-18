@@ -18,20 +18,25 @@ import {
   Notifications,
   NotFound,
   MyRequest,
-  EditRequest
+  EditRequest,
+  CommunityFeed,
+  ReportIssue,
+  CommunityPostDetail
 } from './pages/index.js';
 
 import AuthenticatedLayout from './layout/Authenticated.jsx';
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { login, logout } from './features/userSlice.js';
 import axios from 'axios';
+import { socket } from './utils/socket.js';
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const dispatch = useDispatch();
+  const { user, isLoggedIn } = useSelector((state) => state.user);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -44,9 +49,8 @@ function App() {
         } else {
           dispatch(logout());
         }
-      } catch (err) {
+      } catch {
         dispatch(logout());
-        toast.error("Session expired. Please log in again.");
       } finally {
         setLoading(false);
       }
@@ -54,6 +58,30 @@ function App() {
 
     refreshToken();
   }, [dispatch]);
+
+  // Global Real-time Message Notifications
+  useEffect(() => {
+    if (isLoggedIn && user?._id) {
+      socket.auth = { userId: user._id };
+      if (!socket.connected) {
+        socket.connect();
+      }
+
+      const handleNotification = ({ message }) => {
+        const senderName = message.sender?.name || "Neighbor";
+        const snippet = message.text || "Sent an image attachment";
+        toast.info(`💬 ${senderName}: ${snippet.length > 40 ? snippet.slice(0, 40) + "..." : snippet}`);
+      };
+
+      socket.on("newMessageNotification", handleNotification);
+
+      return () => {
+        socket.off("newMessageNotification", handleNotification);
+      };
+    } else if (socket.connected) {
+      socket.disconnect();
+    }
+  }, [isLoggedIn, user?._id]);
 
   if (loading) return (
     <div className="flex justify-center items-center h-screen bg-gradient-to-r from-white via-sky-50 to-sky-100">
@@ -64,7 +92,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      {/* ✅ Toastify container */}
+      {/* âœ… Toastify container */}
       <ToastContainer position="top-right" autoClose={1000} hideProgressBar={false} newestOnTop={false} closeOnClick pauseOnFocusLoss draggable pauseOnHover />
       <Routes>
         {/* Public Routes */}
@@ -82,6 +110,9 @@ function App() {
           <Route path="/requests/:id" element={<Request />} />
           <Route path="/edit-request/:id" element={<EditRequest />} />
           <Route path="/chat/:receiverId/:requestId" element={<ChatPage />} />
+          <Route path="/community" element={<CommunityFeed />} />
+          <Route path="/community/report" element={<ReportIssue />} />
+          <Route path="/community/:id" element={<CommunityPostDetail />} />
           <Route path="/sos" element={<SOSpage />} />
           <Route path="/notifications" element={<Notifications />} />
         </Route>

@@ -55,7 +55,7 @@ const Request = () => {
                     const dist = haversine(userLocation, requestCoords);
                     setDistance((dist / 1000).toFixed(2));
                 }
-            } catch (err) {
+            } catch {
                 toast.error("Failed to fetch request");
             }
         };

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect } from "react";
+﻿import React, { useState, useRef, useCallback, useEffect } from "react";
 import { GoogleMap, Marker, Autocomplete } from "@react-google-maps/api";
 import { toast } from "react-toastify";
 import { useGoogleMaps } from "../GoogleMapsProvider";
@@ -7,7 +7,7 @@ const containerStyle = { width: "100%", height: "300px" };
 const defaultCenter = { lat: 20.5937, lng: 78.9629 };
 
 const LocationPicker = ({ lat, lng, address, setLocation }) => {
-  const { isLoaded } = useGoogleMaps(); // ✅ now from provider
+  const { isLoaded } = useGoogleMaps(); // âœ… now from provider
   const [markerPosition, setMarkerPosition] = useState({
     lat: lat || defaultCenter.lat,
     lng: lng || defaultCenter.lng,
@@ -72,7 +72,7 @@ const LocationPicker = ({ lat, lng, address, setLocation }) => {
     );
   };
 
-  if (!isLoaded) return null; // ✅ provider already shows loader
+  if (!isLoaded) return null; // âœ… provider already shows loader
 
   return (
     <>

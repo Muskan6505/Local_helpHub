@@ -14,12 +14,16 @@ const messageSchema = new mongoose.Schema(
     },
     requestId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Request",
+      ref: "HelpRequest",
       required: true
     },
     text: {
       type: String,
-      required: true
+      default: ""
+    },
+    image: {
+      type: String,
+      default: ""
     },
     delivered: {
       type: Boolean,

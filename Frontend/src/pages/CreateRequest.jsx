@@ -29,7 +29,7 @@ const CreateRequest = () => {
     if (!lat || !lng || !title) return toast.error("Title and location are required");
 
     try {
-      const res = await axios.post(
+      await axios.post(
         "/api/v1/help-requests",
         {
           title,
@@ -41,12 +41,11 @@ const CreateRequest = () => {
         { withCredentials: true }
       );
       toast.success("Help request created");
+      navigate("/myrequests");
     } catch (err) {
       console.error(err);
       toast.error(err.response?.data?.message || "Failed to create request");
     }
-
-    navigate("/myrequests");
   };
 
   return (
@@ -79,12 +78,12 @@ const CreateRequest = () => {
             required
           >
             <option value="" disabled>Select Category</option>
-            <option value="Medical">🩺 Medical</option>
-            <option value="Medicines">💊 Medicines</option>
-            <option value="Groceries">🛒 Groceries</option>
-            <option value="Food">🍽️ Food</option>
-            <option value="Transport">🚗 Transport</option>
-            <option value="other">🔧 Other</option>
+            <option value="Medical">ðŸ©º Medical</option>
+            <option value="Medicines">ðŸ’Š Medicines</option>
+            <option value="Groceries">ðŸ›’ Groceries</option>
+            <option value="Food">ðŸ½ï¸ Food</option>
+            <option value="Transport">ðŸš— Transport</option>
+            <option value="other">ðŸ”§ Other</option>
           </select>
 
           <select
@@ -93,9 +92,9 @@ const CreateRequest = () => {
             value={formData.priority}
             className="w-full border px-4 py-2 rounded bg-white"
           >
-            <option value="low">🟢 Low</option>
-            <option value="medium">🟡 Medium</option>
-            <option value="high">🔴 High</option>
+            <option value="low">ðŸŸ¢ Low</option>
+            <option value="medium">ðŸŸ¡ Medium</option>
+            <option value="high">ðŸ”´ High</option>
           </select>
 
           <LocationPicker

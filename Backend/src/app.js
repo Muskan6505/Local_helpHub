@@ -21,11 +21,15 @@ app.use(cookieParser())
 import userRouter from "./routes/user.routes.js"
 import responseRouter from "./routes/response.routes.js"
 import helpRequestRouter from "./routes/helpRequest.routes.js"
+import communityPostRouter from "./routes/communityPost.routes.js"
+import sosRouter from "./routes/sos.routes.js"
 
 app.use("/api/v1/users", userRouter)
 app.use("/api/v1/responses", responseRouter)
 app.use("/api/v1/help-requests", helpRequestRouter)
 app.use("/api/v1/messages", messageRoutes);
+app.use("/api/v1/community-posts", communityPostRouter);
+app.use("/api/v1/sos", sosRouter);
 
 
 app.use((err, req, res, next) => {

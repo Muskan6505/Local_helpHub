@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { Link } from "react-router-dom";
 import { Navbar } from "../components/index.js";
 import {
@@ -24,7 +24,7 @@ function Welcome() {
     const features = [
         {
             title: "Ask for Help",
-            description: "Post what you need help with – from groceries to tutoring to household tasks.",
+            description: "Post what you need help with â€“ from groceries to tutoring to household tasks.",
             icon: <Heart className="h-6 w-6 text-blue-600" />,
             bgColor: "bg-blue-100"
         },

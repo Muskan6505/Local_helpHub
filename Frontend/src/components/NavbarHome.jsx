@@ -1,4 +1,4 @@
-import { Home, Search, User, Plus, Menu } from "lucide-react";
+import { Home, Search, User, Plus, Menu, AlertTriangle } from "lucide-react";
 import Logo from "./Logo";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
@@ -71,6 +71,15 @@ const NavbarHome = () => {
                         >
                             <Search size={16} />
                             Browse Requests
+                        </Link>
+                        <Link
+                            to="/community"
+                            className={`flex items-center gap-1 px-3 py-1.5 rounded-xl transition ${
+                                isActive("/community") ? "text-blue-600 bg-blue-100" : "hover:text-black"
+                            }`}
+                        >
+                            <AlertTriangle size={16} />
+                            Community
                         </Link>
                         <Link
                             to="/myrequests"
@@ -155,6 +164,15 @@ const NavbarHome = () => {
                             }`}
                         >
                             Browse Requests
+                        </Link>
+                        <Link
+                            to="/community"
+                            onClick={() => setMobileMenuOpen(false)}
+                            className={`block px-3 py-2 rounded-md transition ${
+                                isActive("/community") ? "text-blue-600 bg-blue-100" : "hover:bg-gray-100"
+                            }`}
+                        >
+                            Community Issues
                         </Link>
                         <Link
                             to="/myrequests"

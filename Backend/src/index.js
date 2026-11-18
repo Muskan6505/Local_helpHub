@@ -5,7 +5,9 @@ import http from "http";
 import { initSocket } from "./utils/Socket.js";
 
 const server = http.createServer(app);
-initSocket(server);
+const io = initSocket(server);
+// Make io accessible in controllers via req.app.get("io")
+app.set("io", io);
 
 server.listen(process.env.CHATPORT || 5000, () => {
     console.log("Server running");

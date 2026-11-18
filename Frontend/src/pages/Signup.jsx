@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useRef } from "react";
-import { GoogleMap, Marker, useJsApiLoader, Autocomplete } from "@react-google-maps/api";
+import { GoogleMap, Marker, Autocomplete } from "@react-google-maps/api";
 import { Eye, EyeOff } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
@@ -7,6 +7,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { login } from "../features/userSlice";
 import Logo from "../components/Logo";
+import { useGoogleMaps } from "../GoogleMapsProvider";
 
 const containerStyle = {
     width: "100%",
@@ -40,10 +41,7 @@ const Signup = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const { isLoaded } = useJsApiLoader({
-        googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
-        libraries: ["places"],
-    });
+    const { isLoaded } = useGoogleMaps();
 
     const handleMapLoad = useCallback((map) => {
         mapRef.current = map;

@@ -1,4 +1,4 @@
-import { Router } from "express";
+﻿import { Router } from "express";
 
 import {
     createRequest,
@@ -14,9 +14,9 @@ const router = Router();
 
 router.post("/", verifyJWT, createRequest);
 router.get("/", verifyJWT, getAllRequests);
+router.get("/filter/query", verifyJWT, getFilteredRequests);
 router.get("/:id", verifyJWT, getRequestById);
 router.put("/:id", verifyJWT, updateRequest);
 router.delete("/:id", verifyJWT, deleteRequest);
-router.get("/filter/query", verifyJWT, getFilteredRequests);
 
 export default router;
