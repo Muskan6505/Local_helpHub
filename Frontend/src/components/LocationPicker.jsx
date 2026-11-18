@@ -81,7 +81,11 @@ const LocationPicker = ({ lat, lng, address, setLocation }) => {
           type="text"
           placeholder="Search or edit address"
           value={address}
-          onChange={(e) => setLocation((prev) => ({ ...prev, address: e.target.value }))}
+          onChange={(e) => setLocation({
+            lat: markerPosition.lat,
+            lng: markerPosition.lng,
+            address: e.target.value,
+          })}
           className="w-full border px-4 py-2 rounded mt-2 mb-2"
         />
       </Autocomplete>

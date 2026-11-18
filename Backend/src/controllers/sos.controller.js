@@ -24,6 +24,19 @@ export const triggerSOS = async (req, res) => {
     throw new ApiError(400, "category, longitude, and latitude are required");
   }
 
+  const parsedLongitude = Number(longitude);
+  const parsedLatitude = Number(latitude);
+  if (
+    !Number.isFinite(parsedLongitude) ||
+    !Number.isFinite(parsedLatitude) ||
+    parsedLongitude < -180 ||
+    parsedLongitude > 180 ||
+    parsedLatitude < -90 ||
+    parsedLatitude > 90
+  ) {
+    throw new ApiError(400, "A valid longitude and latitude are required");
+  }
+
   const validCategories = ["Medical", "Personal Safety", "Accident", "Fire", "Other"];
   if (!validCategories.includes(category)) {
     throw new ApiError(400, `category must be one of: ${validCategories.join(", ")}`);
@@ -41,7 +54,7 @@ export const triggerSOS = async (req, res) => {
     description: description || "",
     location: {
       type: "Point",
-      coordinates: [parseFloat(longitude), parseFloat(latitude)],
+      coordinates: [parsedLongitude, parsedLatitude],
     },
     address: address || "",
     emergencyContacts: Array.isArray(emergencyContacts) ? emergencyContacts : [],
@@ -94,15 +107,33 @@ export const getNearbyActiveSOS = async (req, res) => {
     throw new ApiError(400, "longitude and latitude are required query parameters");
   }
 
+  const parsedLongitude = Number(longitude);
+  const parsedLatitude = Number(latitude);
+  const parsedRadius = Number(radius);
+  if (
+    !Number.isFinite(parsedLongitude) ||
+    !Number.isFinite(parsedLatitude) ||
+    parsedLongitude < -180 ||
+    parsedLongitude > 180 ||
+    parsedLatitude < -90 ||
+    parsedLatitude > 90
+  ) {
+    throw new ApiError(400, "A valid longitude and latitude are required");
+  }
+  if (!Number.isFinite(parsedRadius) || parsedRadius < 1 || parsedRadius > 50000) {
+    throw new ApiError(400, "radius must be between 1 and 50000 meters");
+  }
+
   const sosList = await SOSRequest.find({
     status: "Active",
+    requester: { $ne: req.user._id },
     location: {
       $near: {
         $geometry: {
           type: "Point",
-          coordinates: [parseFloat(longitude), parseFloat(latitude)],
+          coordinates: [parsedLongitude, parsedLatitude],
         },
-        $maxDistance: parseInt(radius, 10),
+        $maxDistance: parsedRadius,
       },
     },
   })

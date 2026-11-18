@@ -1,4 +1,4 @@
-import { Home, Search, User, Plus, Menu, AlertTriangle } from "lucide-react";
+import { Home, Search, User, Plus, Menu, AlertTriangle, Siren } from "lucide-react";
 import Logo from "./Logo";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
@@ -89,6 +89,15 @@ const NavbarHome = () => {
                         >
                             <User size={16} />
                             My Requests
+                        </Link>
+                        <Link
+                            to="/sos"
+                            className={`flex items-center gap-1 px-3 py-1.5 rounded-xl transition ${
+                                isActive("/sos") ? "text-red-600 bg-red-100" : "text-red-600 hover:bg-red-50"
+                            }`}
+                        >
+                            <Siren size={16} />
+                            SOS
                         </Link>
                     </div>
 
@@ -182,6 +191,16 @@ const NavbarHome = () => {
                             }`}
                         >
                             My Requests
+                        </Link>
+                        <Link
+                            to="/sos"
+                            onClick={() => setMobileMenuOpen(false)}
+                            className={`block px-3 py-2 rounded-md transition ${
+                                isActive("/sos") ? "text-red-600 bg-red-100" : "text-red-600 hover:bg-red-50"
+                            }`}
+                        >
+                            <Siren size={16} className="inline mr-1" />
+                            SOS
                         </Link>
                         <Link
                             to="/requests/create"
